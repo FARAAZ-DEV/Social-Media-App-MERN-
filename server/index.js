@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './routes/Route.js';
 import SocketHandler from './SocketHandler.js';
 
+import dotenv from "dotenv";
 
 // config
 const __filename = fileURLToPath(import.meta.url);
@@ -44,16 +45,16 @@ io.on("connection", (socket) =>{
 
 // mongoose setup
 
-const PORT = 6001;
+dotenv.config();
 
-mongoose.connect('mongodb://localhost:27017/socialeX', { 
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }
-).then(()=>{
+const PORT = process.env.PORT || 6001;
 
-        server.listen(PORT, ()=>{
-            console.log(`Running @ ${PORT}`);
-        });
-    }
-).catch((e)=> console.log(`Error in db connection ${e}`));
+mongoose.connect(process.env.MONGO_URL, { 
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+})
+.catch((err) => console.log(`❌ Error in DB connection: ${err}`));
+
