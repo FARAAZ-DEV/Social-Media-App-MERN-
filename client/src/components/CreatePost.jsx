@@ -23,6 +23,7 @@ const CreatePost = () => {
         setIsCreatePostOpen(false);
         setUploadProgress();
     }
+
     const handlePostUplload = async (e) =>{
         e.preventDefault();
         const storageRef = ref(storage, uuidv4());
@@ -37,12 +38,21 @@ const CreatePost = () => {
             getDownloadURL(uploadTask.snapshot.ref).then( async (downloadURL) => {
             console.log('File available at', downloadURL);
             try{
-                const inputs = {userId: localStorage.getItem('userId'), userName: localStorage.getItem('username'), 
-                                    userPic: localStorage.getItem('profilePic'), fileType: postType, file: downloadURL, 
-                                    description: postDescription, location: postLocation, comments:{"New user": "This is my forst comment"}}
+                const inputs = {
+                    userId: localStorage.getItem('userId'), 
+                    userName: localStorage.getItem('username'), 
+                    userPic: localStorage.getItem('profilePic'), 
+                    fileType: postType, 
+                    file: downloadURL, 
+                    description: postDescription, 
+                    location: postLocation, 
+                    comments:{"New user": "This is my forst comment"}
+                }
                 
-                await axios.post('http://localhost:6001/createPost', inputs)
+                // Updated Axios call using environment variable
+                await axios.post(`${process.env.REACT_APP_API_URL}/createPost`, inputs)
                 .then( async (res)=>{
+                    console.log("Post created:", res.data);
                 }).catch((err) =>{
                     console.log(err);
                 });
@@ -52,8 +62,6 @@ const CreatePost = () => {
             }});
         });
     }
-
-
 
   return (
     <>

@@ -3,8 +3,8 @@ import socketIoClient from 'socket.io-client';
 
 export const GeneralContext = createContext();
 
-
-const WS = 'http://localhost:6001';
+// Use environment variable for backend URL
+const WS = process.env.REACT_APP_API_URL;
 
 const socket = socketIoClient(WS);
 
@@ -15,40 +15,40 @@ export const GeneralContextProvider = ({children}) => {
     const [isNotificationsOpen, setNotificationsOpen] = useState(false);
 
     const [notifications, setNotifications] = useState([]);
-
     const [chatFirends, setChatFriends] = useState([]);
-   
 
     const INITIAL_STATE = {
       chatId: 'null',
       user: {},
-  };
+    };
 
-  const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');
 
-  const chatReducer = (state, action) => {
-      switch (action.type) {
-          case "CHANGE_USER":
-              return {
-                  user: action.payload,
-                  chatId: userId > action.payload._id ? userId + action.payload._id : action.payload._id + userId
-              }
-          default:
-              return state;
-      }
-  };
+    const chatReducer = (state, action) => {
+        switch (action.type) {
+            case "CHANGE_USER":
+                return {
+                    user: action.payload,
+                    chatId: userId > action.payload._id ? userId + action.payload._id : action.payload._id + userId
+                }
+            default:
+                return state;
+        }
+    };
 
-  const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
+    const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
-
-
-
-  return (
-    <GeneralContext.Provider value={{socket, isCreatPostOpen, setIsCreatePostOpen, isCreateStoryOpen, 
-                                        setIsCreateStoryOpen, isNotificationsOpen, setNotificationsOpen, notifications, 
-                                        setNotifications, chatFirends, setChatFriends, chatData:state, dispatch}}>
-                                            
-                {children}
-    </GeneralContext.Provider>
-  )
+    return (
+        <GeneralContext.Provider value={{
+            socket,
+            isCreatPostOpen, setIsCreatePostOpen,
+            isCreateStoryOpen, setIsCreateStoryOpen,
+            isNotificationsOpen, setNotificationsOpen,
+            notifications, setNotifications,
+            chatFirends, setChatFriends,
+            chatData: state, dispatch
+        }}>
+            {children}
+        </GeneralContext.Provider>
+    )
 }

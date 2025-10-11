@@ -10,7 +10,6 @@ const Stories = () => {
 
   const [stories, setStories] = useState([]);
   const [isStoryPlaying, setIsStoryPlaying] = useState(false);
-
   const [story, setStory] = useState();
 
   const addStory = async () => {
@@ -23,7 +22,8 @@ const Stories = () => {
 
   const fetchStories = async () => {
     try {
-      const response = await axios.get("http://localhost:6001/fetchAllStories");
+      // Updated Axios call using environment variable
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/fetchAllStories`);
       setStories(response.data);
       console.log(response.data[0]);
     } catch (error) {
